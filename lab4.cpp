@@ -8,10 +8,6 @@ char symbols[] = {'!', ',', ' ',
                   '?', ':', ';',
                   '-', };
 
-char first_10_of_Latin[] = {'A', 'B', 'C', 'D', 'E',
-                            'F', 'G', 'H', 'I', 'J'};
-
-
 
 void clearStream(){
     cin.clear();
@@ -29,18 +25,9 @@ void readFile(char filename[], char string[]){
         ++n;
     }
     string[n] = '\0';
+    fin.close();
 }
 
-
-inline void lineDown(int times=1){
-    for(line_down_times = 0; line_down_times < times; line_down_times++){
-        cout << "\n";
-    }
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//string methods
 
 int count(char string[], char symbol){
     int count = 0;
@@ -62,36 +49,6 @@ int find(char string[], char symbol, int start=0){
     return -1;
 }
 
-int split(char string[], char splittedString[startWords][wordsLen], char separator=' '){
-    int words = count(string, separator) + 1;
-    int start, end = -1;
-    for ( int i = 0; i < words; i++ ){
-        start = end + 1;
-        end = find(string, separator, start);
-        if (end == -1){
-            end = strlen(string);
-        }
-        for ( int j = start, index = 0; j < end; j++, index++ ){
-            splittedString[i][index] = string[j];
-        }
-
-    }
-    return words;
-
-}
-
-
-bool isPunct(char string[]){
-
-    for ( int i = 0; i < strlen(symbols); i++ ){
-        if (string[0] == symbols[i]){
-            return true;
-        }
-    }
-    return false;
-}
-
-
 void deleteSymbols(char string[], char symbol){
     for (int i = 0; i < strlen(string) - 1; i++){
         if (string[i] == symbol &&  string[i + 1] == symbol){
@@ -106,17 +63,24 @@ void deleteSymbols(char string[], char symbol){
 }
 
 
-int findSubstringsAmount(char string[], char substring[]) {
+int amountOfSubstr(char string[], char substring[]) {
     bool flag;
-    for ( int i = 0; i < strlen(string) - strlen(substring) - 1; i++ ){
+    int counter = 0;
+    int strLen = strlen(string), substrLen = strlen(substring);
+    for ( int i = 0; i <= strLen - substrLen; i++ ){
         flag = true;
-        for ( int j = 0; j < strlen(substring); j++ ){
-
+        for ( int j = 0; j < substrLen; j++ ){
+            if (substring[j] != string[i + j]){
+                flag = false;
+                break;
+            }
+        }
+        if (flag){
+            counter++;
         }
     }
-    return 0;
+    return counter;
 }
-
 
 void strWithoutDigs(char string[]){
     char digs[] = {'0', '1', '2', '3',
@@ -132,7 +96,7 @@ void strWithoutDigs(char string[]){
 }
 
 
-void verticalcout(char string[]){
+void verticalCout(char string[]){
     for(int i = 0 ; i < strlen(string); i++){
         cout << string[i] << "\n";
     }
@@ -154,9 +118,6 @@ int main() {
     char filename[500];
     int const string_size = 500;
     char string[string_size], substring[string_size];
-    bool repeaters;
-    int words;
-    char splittedString[startWords][wordsLen] = {};
 
     cout << "1. Ввести последовательность символов\n";
     cout << "2. Отредактировать входной текст\n";
@@ -178,7 +139,8 @@ int main() {
                 if (method == 1){
                     cout << "Введите строку: \n";
                     cin.getline(string, string_size);
-                }else{
+                }
+                else{
                     cout << "Введите путь к файлу: \n";
                     cin.getline(filename, 500);
                     readFile(filename, string);
@@ -208,18 +170,9 @@ int main() {
             case 4:
                 //№6
                 cout << "Вывод последовательности вертикально: \n";
-                verticalcout(string);
+                verticalCout(string);
                 cout << string;
                 break;
 
             case 5:
 
-                cout << "Введите подстроку: \n";
-                cin.getline(string, string_size);
-                cout << "поиск кол-ва подстроки перебором: \n" << findSubstringsAmount(string, substring);
-                break;
-
-        }
-    }
-    return 0;
-}
